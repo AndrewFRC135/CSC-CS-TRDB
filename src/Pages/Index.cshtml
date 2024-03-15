@@ -1,0 +1,24 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container-md">
+    <div class="row">
+        <h3>Dashboard</h3>
+        <span class="border-bottom"></span>
+    </div>
+
+    <form id="update" method="get">
+
+        <input type="number" asp-for="MatchId" />
+        <input type="submit" value="REFRESH" class="btn btn-primary" />
+
+    </form>
+
+    <span>&nbsp;</span>
+
+
+    <partial name="Shared/_Match.cshtml" model="Model.MatchModel" />
+</div>

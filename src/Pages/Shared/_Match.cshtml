@@ -1,0 +1,436 @@
+﻿@model CSCCSTRDB.Models.MatchModel
+
+
+<style>
+	.players {
+		font-size: 22px;
+	}
+
+	.songs {
+		font-size: 11px;
+	}
+
+	svg {
+		width: 16.5px;
+		height: 16.5px;
+	}
+
+	.player-ban {
+		text-decoration: line-through;
+		text-decoration-thickness: 0.33em;
+	}
+
+	.player-1-color {
+		text-decoration-color: #e91e63;
+		color: #e91e63;
+		fill: #e91e63;
+	}
+	.player-2-color {
+		text-decoration-color: #03a9f4;
+		color: #03a9f4;
+		fill: #03a9f4;
+	}
+	.player-defend-color {
+		color: #19e619;
+		fill: #19e619;
+	}
+	.player-steal-color {
+		color: #ff8000;
+		fill: #ff8000;
+	}
+
+	.tiebreak-color {
+		color: #e6e619;
+		fill: #e6e619;
+	}
+
+	.player-1-highlight {
+		background-color: #e91e6344;
+	}
+
+	.player-2-highlight {
+		background-color: #03a9f444;
+	}
+
+	.tiebreak-lean-highlight {
+		background-color: #e6e61922;
+	}
+
+	.tiebreak-lock-highlight {
+		background-color: #e6e61944;
+	}
+
+	/* Small devices (landscape phones, 576px and up) */
+	@@media (min-width: 576px) {
+	}
+
+	/* Medium devices (tablets, 768px and up) */
+	@@media (min-width: 768px) {
+	}
+
+	/* Large devices (desktops, 992px and up) */
+	@@media (min-width: 992px) {
+		.players {
+			font-size: 28px;
+		}
+
+		.songs {
+			font-size: 14px;
+		}
+
+		svg {
+			width: 21px;
+			height: 21px;
+		}
+
+		.player-ban {
+			text-decoration-thickness: 4.6px;
+		}
+
+		input[type='radio'] {
+			transform: scale(1.25);
+		}
+	}
+
+	/* X-Large devices (large desktops, 1200px and up) */
+	@@media (min-width: 1200px) {
+		.players {
+			font-size: 34px;
+		}
+
+		.songs {
+			font-size: 17px;
+		}
+
+		svg{
+			width: 25.5px;
+			height: 25.5px;
+		}
+
+		.player-ban {
+			text-decoration-thickness: 5.6px;
+		}
+
+		input[type='radio'] {
+			transform: scale(1.5);
+		}
+	}
+
+	/* XX-Large devices (larger desktops, 1400px and up) */
+	@@media (min-width: 1400px) {
+		.players {
+			font-size: 40px;
+		}
+
+		.songs {
+			font-size: 20px;
+		}
+
+		svg {
+			width: 30px;
+			height: 30px;
+		}
+
+		.player-ban {
+			text-decoration-thickness: 6.6px;
+		}
+
+		input[type='radio'] {
+			transform: scale(1.75);
+		}
+	}
+
+</style>
+
+<div class="container-md bg-black text-white p-3" style="min-width: 768px">
+	<div class="row players">
+		<div id="player1" class="col text-center player-1-color">
+			<!--Player Name or non-breaking space-->
+		</div>
+		<div id="match" class="col-3 text-center">
+			<!--Match name or Group name-->
+		</div>
+		<div id="player2" class="col text-center player-2-color">
+			<!--Player Name or non-breaking space-->
+		</div>
+	</div>
+	<div class="row songs text-center pt-3">
+		<div class="col text-center px-1">
+			&nbsp;
+		</div>
+		<div class="col-11 p-0 m-0">
+			<div class="row align-items-center p-0 m-0">
+				<div class="col text-center px-0">
+					<b>FOCUS</b>
+				</div>
+				<div class="col-5 text-center px-0">
+					<b>SONG</b>
+				</div>
+				<div class="col-3 text-center px-0">
+					<b>CHARTER</b>
+				</div>
+				<div class="col text-center px-0">
+					<b>SOURCE</b>
+				</div>
+			</div>
+		</div>
+		<div class="col text-center px-0">
+			&nbsp;
+		</div>
+		<span class="border-bottom"></span>
+	</div>
+
+
+	@{
+		var lastFocusId = 1;	// counter flag to decide when to draw a divider line on the screen
+	}
+
+	@foreach (var song in Model.SongInfoList)
+	{
+		@if (lastFocusId != song.FocusId)
+		{	// the focus ID has changed, might need to add a divider
+			@if (song.isTiebreak == false || song.FocusId == 1)
+			{	// add a divider when the focus group changed and before tiebreaker section
+				<div class="row songs m-0 p-0">
+					<span class="border-top"></span>
+				</div>
+			}
+			lastFocusId = song.FocusId;
+		}
+
+		// determine what round this song is already applied to (null if not applied yet)
+		//Models.Database.Round round = Model.Match?.Rounds.Where(r => r.PickedSongId == song.SongId).FirstOrDefault()!;
+
+		<div id="song-@song.Id" class="row songs my-2 align-items-center">
+			<div id="player1-action" class="col text-center px-0">
+				<!--The action box for Player 1 on this song-->
+
+				@* @if (Model.Phase > Models.MatchModel.MatchState.NotStarted)
+				{	// there is some match data; fill in this column
+					if (song.SongId == Model.Match?.Player1BanSongId)
+					{	// player 1 banned this song (Red X)
+						<svg class="player-1-color">
+							<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#x-square" />
+						</svg>
+					}
+					else if (song.SongId == Model.Match?.Player2BanSongId)
+					{	// player 2 banned this song (Blue X)
+						<svg class="player-2-color">
+							<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#x-square" />
+						</svg>
+					}
+					else if (round != null)
+					{	// this song is in a round; check if a result is known
+						if (round.WinningPlayerNum == 1)
+						{   // this player won this song
+							if (round.WinningPlayerNum == round.PickingPlayerNum)
+							{	// this player defended their pick
+								<svg class="player-defend-color">
+									<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square" />
+								</svg>
+							}
+							else if (round.PickingPlayerNum == null)
+							{	// this song was not chosen; therefore this player won the tiebreak
+								<svg class="tiebreak-color">
+									<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square-fill" />
+								</svg>
+							}
+							else
+							{	// this player stole their opponent's pick
+								<svg class="player-steal-color">
+									<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square-fill" />
+								</svg>
+							}
+						}
+						else if (round.PickedSongId != null && round.WinningPlayerNum == null)
+						{	// this round's song is selected, but the winner is not yet
+							<input type="radio" value=1 id="RoundWinnerSelection" name="RoundWinnerSelection" onchange="this.form.submit();" />
+						}
+						else
+						{	// this player did not win this song; or it hasn't been won yet (leave empty)
+							@:&nbsp;
+						}
+					}
+					else if (song.isTiebreak == false &&
+						(Model.Phase == Models.MatchModel.MatchState.AwaitingPlayer1Ban ||
+						Model.Phase == Models.MatchModel.MatchState.AwaitingPlayer1Pick))
+					{	// not a tiebreak and player 1 gets to pick; show radio buttons
+						<input type="radio" value=@song.SongId id="Player1Selection" name="Player1Selection" onchange="this.form.submit();" />
+					}
+					else
+					{	// this is a tiebreak or some other case that cannot show a value
+						@:&nbsp;
+					}
+				}
+				else
+				{	// no match data; emit non-breaking space
+					@:&nbsp;
+				} *@
+			</div>
+
+			@* {
+				string SongClass = "";
+				string StrikeClass = "";
+
+				if (Model.Phase > Models.MatchModel.MatchState.NotStarted)
+				{   // there is some match data; fill in this column
+					if (song.SongId == Model.Match?.Player1BanSongId)
+					{   // player 1 banned this song (Red X)
+						SongClass = "player-1-color";
+						StrikeClass = "player-ban";
+					}
+					else if (song.SongId == Model.Match?.Player2BanSongId)
+					{   // player 2 banned this song (Blue X)
+						SongClass = "player-2-color";
+						StrikeClass = "player-ban";
+					}
+					else if (round != null)
+					{   // this song is in a round; check if a result is known
+						if (round.PickingPlayerNum == 1)
+						{   // player 1 picked this song
+							SongClass = "player-1-highlight";
+						}
+						else if (round.PickingPlayerNum == 2)
+						{   // this song was not chosen; therefore this player won the tiebreak
+							SongClass = "player-2-highlight";
+						}
+						else
+						{   // this player stole their opponent's pick
+							SongClass = "tiebreak-lock-highlight";
+						}
+					}
+				}
+			} *@
+
+			<!--Specify the correct style class for the song info-->
+			<div id="song" class="col-11 p-0 m-0">
+				@* @SongClass @StrikeClass  *@
+				<div class="row align-items-center text-white p-0 m-0">
+					<div class="col text-center px-1">
+						@song.FocusName @(song.isTiebreak == true ? "(TB)" : "")
+					</div>
+					<div class="col-5 text-center px-1">
+						@song.Artist - @song.Name @(song.Modifiers.Length > 0 ? "(" + song.Modifiers + ")" : "")
+					</div>
+					<div class="col-3 text-center px-1">
+						@song.Charter
+					</div>
+					<div class="col text-center px-1">
+						@song.Source
+					</div>
+				</div>
+			</div>
+
+			<div id="player2-action" class="col text-center px-0">
+			<!--The action box for Player 2 on this song-->
+
+			@* 
+			@if (Model.Phase > Models.MatchModel.MatchState.NotStarted)
+			{   // there is some match data; fill in this column
+				if (song.SongId == Model.Match?.Player1BanSongId)
+				{   // player 1 banned this song (Red X)
+					<svg class="player-1-color">
+						<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#x-square" />
+					</svg>
+				}
+				else if (song.SongId == Model.Match?.Player2BanSongId)
+				{   // player 2 banned this song (Red X)
+					<svg class="player-2-color">
+						<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#x-square" />
+					</svg>
+				}
+				else if (round != null)
+				{   // this song is in a round; check if a result is known
+					if (round.WinningPlayerNum == 2)
+					{   // this player won this song
+						if (round.WinningPlayerNum == round.PickingPlayerNum)
+						{   // this player defended their pick
+							<svg class="player-defend-color">
+								<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square" />
+							</svg>
+						}
+						else if (round.PickingPlayerNum == null)
+						{   // this song was not chosen; therefore this player won the tiebreak
+							<svg class="tiebreak-color">
+								<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square-fill" />
+							</svg>
+						}
+						else
+						{   // this player stole their opponent's pick
+							<svg class="player-steal-color">
+								<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square-fill" />
+							</svg>
+						}
+					}
+					else if (round.PickedSongId != null && round.WinningPlayerNum == null)
+					{   // this round's song is selected, but the winner is not yet
+						<input type="radio" value=2 id="RoundWinnerSelection" name="RoundWinnerSelection" onchange="this.form.submit();" />
+					}
+					else
+					{   // this player did not win this song; or it hasn't been won yet (leave empty)
+						@:&nbsp;
+					}
+				}
+				else if (song.isTiebreak == false &&
+				(Model.Phase == Models.MatchModel.MatchState.AwaitingPlayer2Ban ||
+				Model.Phase == Models.MatchModel.MatchState.AwaitingPlayer2Pick))
+				{   // not a tiebreak and player 2 gets to pick; show radio buttons
+					<input type="radio" value=@song.SongId id="Player2Selection" name="Player2Selection" onchange="this.form.submit();" />
+				}
+				else
+				{   // this is a tiebreak or some other case that cannot show a value
+					@:&nbsp;
+				}
+			}
+			else
+			{   // no match data; emit non-breaking space
+				@:&nbsp;
+			}
+			*@
+			</div>
+		</div>
+	}
+
+	<div class="row songs m-0 p-0">
+		<span class="border-top"></span>
+	</div>
+
+	<div class="row songs my-2 align-items-center">
+		<div class="col text-center px-0">
+			<svg class="player-1-color">
+				<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#x-square" />
+			</svg>
+			<svg class="player-2-color">
+				<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#x-square" />
+			</svg>
+			SONG BANS
+		</div>
+		<div class="col text-center px-0">
+			<svg class="player-defend-color">
+				<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square" />
+			</svg>
+			 PICK WIN
+		</div>
+		<div class="col text-center px-0">
+			<svg class="player-steal-color">
+				<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square-fill" />
+			</svg>
+			STOLEN WIN
+		</div>
+		<div class="col text-center px-0">
+			<svg class="tiebreak-color">
+				<use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#check-square-fill" />
+			</svg>
+			TIEBREAK WIN
+		</div>
+		<div class="col text-center px-0">
+			<span class="player-1-highlight">SONG </span><span class="player-2-highlight">PICKS</span>
+		</div>
+		<div class="col text-center px-0">
+			<span class="tiebreak-lock-highlight">TIEBREAK LOCK</span>
+		</div>
+	</div>
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/match.js"></script>

@@ -1,0 +1,44 @@
+﻿@page
+@model CSCCSTRDB.Pages.Admin.IndexModel
+
+@{
+    ViewData["Title"] = "Admin";
+}
+<div class="container-md">
+<h1>Administration</h1>
+
+<h4>Assign Participants to Groups</h4>
+<hr />
+<div class="row">
+    <div class="col">
+        <form method="post">
+            <div class="form-group">
+                <input type="submit" value="Populate" class="btn btn-primary" />
+                <input type="submit" value="Reset" class="btn btn-secondary" />
+            </div>
+        </form>
+    </div>
+</div>
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                @Html.TextArea("Password List", Model.CHPasswordList, 60, 30, null);
+            </div>
+            <div class="row">
+                @Html.TextArea("Server List" , IndexModel.CHServerList, 60, 60, null);
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <form method="get">
+                    <input type="number" asp-for="FirstConnectionId" />
+                    <input type="submit" value="GET LIST" class="btn btn-primary" />
+                </form>
+            </div>
+            <div class="row">
+                @Html.TextArea("Connection String", Model.CHConnectionList, 60, 60, null);
+            </div>
+        </div>
+    </div>
+</div>
+

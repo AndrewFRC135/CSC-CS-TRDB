@@ -1,0 +1,88 @@
+﻿@page
+@model CSCCSTRDB.Pages.Admin.Participants.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Participant</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.Pronouns)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.Pronouns)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.DiscordId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.DiscordId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.IsCompetitor)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.IsCompetitor)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.QualifierRank)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.QualifierRank)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.QualifierScore)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.QualifierScore)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.AdvancedToPlayoff)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.AdvancedToPlayoff)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.ReceivedGroupBye)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.ReceivedGroupBye)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.IsReferee)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.IsReferee)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.GroupRank)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.GroupRank)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Participant.Group)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Participant.Group.Id)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Participant.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

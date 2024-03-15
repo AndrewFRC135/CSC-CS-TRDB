@@ -1,0 +1,92 @@
+﻿@page
+@model CSCCSTRDB.Pages.RefSheetModel
+@{
+    ViewData["Title"] = "Referee Sheet";
+}
+
+<script>
+    completed = () => {
+        alert('Posted using Unobtrusive AJAX');
+    };
+</script>
+
+<div class="container-md p-3" style="min-width: 768px">
+    @if (Model.MatchModel.Phase == Models.MatchModel.MatchState.NotStarted)
+    {   // A match has not been started yet; show the match selection boxes
+        <form method="get" class="d-inline-flex">
+            <select asp-for="GroupId" asp-items="RefSheetModel.GroupList" onchange="this.form.submit();">
+                <option value=0>[Choose Group]</option>
+            </select>
+        </form>
+        @if (Model.GroupId > 0)
+        {
+            <form method="get" class="d-inline-flex">
+                <input type="hidden" asp-for="GroupId" />
+                <select asp-for="Player1Id" asp-items="Model.Player1List" onchange="this.form.submit();">
+                    <option value=0>[Choose Higher Seeded Player]</option>
+                </select>
+            </form>
+            @if (Model.Player1Id > 0)
+            {
+                <form method="get" class="d-inline-flex">
+                    <input type="hidden" asp-for="GroupId" />
+                    <input type="hidden" asp-for="Player1Id" />
+                    <select asp-for="Player2Id" asp-items="Model.Player2List" onchange="this.form.submit();">
+                        <option value=0>[Choose Lower Seeded Player]</option>
+                    </select>
+                </form>
+                @if (Model.Player2Id > 0)
+                {
+                    <form method="get" class="d-inline-flex">
+                        <input type="hidden" asp-for="GroupId" />
+                        <input type="hidden" asp-for="Player1Id" />
+                        <input type="hidden" asp-for="Player2Id" />
+                        <select asp-for="RefereeId" asp-items="Model.RefereeList" onchange="this.form.submit();">
+                            <option value="0">[Choose Referee]</option>
+                        </select>
+                    </form>
+                }
+
+            }
+
+        }
+        @if (Model.RefereeId > 0)
+        {
+            <form method="post" asp-page-handler="StartMatch" class="d-inline-flex" onclick="return confirm('Are you sure you want to start this match? Do NOT use the back button in your browser!')">
+                <input type="hidden" asp-for="GroupId" />
+                <input type="hidden" asp-for="Player1Id" />
+                <input type="hidden" asp-for="Player2Id" />
+                <input type="hidden" asp-for="RefereeId" />
+                <input type="submit" value="BEGIN MATCH" class="btn btn-primary" />
+            </form>
+        }
+        <partial name="Shared/_Match.cshtml" model="Model.MatchModel" />
+    }
+    else
+    {   // a match has started or is in progress
+        <form method="post" asp-page-handler="UpdateMatch">
+            <input type="hidden" asp-for="MatchId" />
+
+            <div class="row text-center">
+                Match ID #@Model.MatchId
+            </div>
+
+            <div class="Row text-center">
+                <h3>IMPORTANT: DO NOT USE YOUR BROWSER'S BACK BUTTON!</h3>
+            </div>
+            <div class="row align-items-center">
+                <div class="col text-center">
+                    <input type="submit" value="UNDO LAST BAN/PICK/WINNER" class="btn btn-primary" asp-page-handler="UndoMatch">
+                </div>
+                <div class="col text-center">
+                    <h5> @Model.MatchModel.Phase.ToString(); </h5>
+                </div>
+                <div class="col text-center">
+                    <h5>Player 2</h5>
+                </div>
+            </div>
+
+            <partial name="Shared/_Match.cshtml" model="Model.MatchModel" />
+        </form>
+    }
+</div>

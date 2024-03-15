@@ -1,0 +1,96 @@
+﻿@page
+@model CSCCSTRDB.Pages.Admin.Participants.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].Pronouns)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].DiscordId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].IsCompetitor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].QualifierRank)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].QualifierScore)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].AdvancedToPlayoff)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].ReceivedGroupBye)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].IsReferee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].GroupRank)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Participant[0].Group)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Participant) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pronouns)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscordId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsCompetitor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QualifierRank)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QualifierScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdvancedToPlayoff)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceivedGroupBye)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsReferee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GroupRank)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Group.Id)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

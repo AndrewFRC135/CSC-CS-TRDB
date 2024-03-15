@@ -1,0 +1,88 @@
+﻿@page
+@model CSCCSTRDB.Pages.Participants.IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container-md">
+<div class="row">
+    <h3>Participants</h3>
+    <span class="border-bottom"></span>
+
+    <div class="row align-content-center text-center table-responsive text-break text-nowrap">
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th class="col-4">
+                        <a class="@(Model.sortCol == 1 ? "disabled" : "")" asp-page="./Index" asp-route-sort_col=1>
+                            Name
+                        </a>
+                    </th>
+                    <th class="col-2">
+                        <a class="@(Model.sortCol == 2 ? "disabled" : "")" asp-page="./Index" asp-route-sort_col=2>
+                            Qualifier<br />Ranking
+                        </a>
+                    </th>
+                    <th class="col-2">
+                        <a class="@(Model.sortCol == 3 ? "disabled" : "")" asp-page="./Index" asp-route-sort_col=3>
+                            Qualifier<br />Score
+                        </a>
+                    </th>
+                    <th class="col-4">
+                        <a class="@(Model.sortCol == 4 ? "disabled" : "")" asp-page="./Index" asp-route-sort_col=4>
+                            Group
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.pList)
+                {
+                    <tr>
+                        <td>
+                            <a asp-page="">
+                                @Html.DisplayName(item.Name)
+                            </a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualifierRank)
+                        </td>
+                        <td>
+                            @if (item.QualifierScore.HasValue)
+                            {
+                                @item.QualifierScore.Value.ToString("N0")
+                            }
+                        </td>
+
+                        @if (item.Group is null)
+                        {   // no group assigned to this player
+                            @if (item.ReceivedGroupBye == true)
+                            {   // this player has received a bye
+                                <td>
+                                    <div style="background-color:@ColorHelper.GetSeedHtmlColor(0);">
+                                        Playoff Bye
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {   // This player is unassigend
+                                <td>
+                                    [none]
+                                </td>
+                            }
+                        }
+                        else
+                        {   // this player is in a group
+                            <td>
+                                <div style="background-color:@ColorHelper.GetSeedHtmlColor(item.GroupRank ?? Model.maxSeed, Model.maxSeed);">
+                                    <b> @item.Group?.Name </b> - Seed @item.GroupRank.ToString()
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
